@@ -2486,7 +2486,10 @@ const REPORTS = [
   {id:'appsheet', name:'Export to AppSheet (Check Stock)', desc:'ไฟล์ตามเทมเพลต AppSheet Check Stock (COUNTKey/Date/ProductKey/LOT/Location/QtyCount/Unit/Timestamp) ของรอบที่เลือก — นำเข้ากลับ AppSheet ได้โดยตรง', fn:reportAppSheetCheckStock, needsRound:true},
 ];
 
-function renderExport(container){
+async function renderExport(container){
+  // โหลด detail + exceptions ของรอบที่ใช้งานอยู่เข้า cache ก่อนเสมอ
+  // (ถ้าไม่ทำตรงนี้ EXC_CACHE อาจยังว่างหากเข้าหน้านี้เป็นหน้าแรกของ session ทำให้ยอดที่มาจากรายงานผิดตำแหน่ง/ผิด LOT หายไปจากรายงาน เช่น *P-0002 ขึ้น 0)
+  if(ACTIVE_ROUND){ await loadDetail(ACTIVE_ROUND); await loadExceptions(ACTIVE_ROUND); }
   container.appendChild(el('div','section-title','เลือกรายงานที่ต้องการ Export<div class="line"></div>'));
   if(!ACTIVE_ROUND){
     container.appendChild(el('div','footer-note','ยังไม่มีรอบนับที่เลือกอยู่ — รายงาน Stock Count / Variance จะว่างเปล่าจนกว่าจะสร้างรอบนับ'));
