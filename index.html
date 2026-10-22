@@ -3,55 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ยืนยันบิลขายที่รับคืนจาก DC</title>
+<title>ติดตามบิลขายที่รับคืนจาก DC</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f5f6f8;--card:#fff;--tx:#1d2330;--mu:#6b7385;--bd:#e1e4ea;--pr:#2457d6;--ok:#15803d;--okb:#dcfce7;--wn:#b45309;--wnb:#fef3c7;--er:#b91c1c;--erb:#fee2e2;--in:#1d4ed8;--inb:#dbeafe;--gr:#475569;--grb:#e2e8f0}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151c;--card:#1b202b;--tx:#e8ebf2;--mu:#98a1b5;--bd:#2c3342;--pr:#6b95ff;--ok:#4ade80;--okb:#14351f;--wn:#fbbf24;--wnb:#3a2c0b;--er:#f87171;--erb:#3d1818;--in:#93b4ff;--inb:#1c2b52;--gr:#cbd5e1;--grb:#2c3342}}
-:root[data-theme="dark"]{--bg:#12151c;--card:#1b202b;--tx:#e8ebf2;--mu:#98a1b5;--bd:#2c3342;--pr:#6b95ff;--ok:#4ade80;--okb:#14351f;--wn:#fbbf24;--wnb:#3a2c0b;--er:#f87171;--erb:#3d1818;--in:#93b4ff;--inb:#1c2b52;--gr:#cbd5e1;--grb:#2c3342}
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--bg:#f5f6f8;--card:#fff;--tx:#1d2330;--mu:#6b7385;--bd:#e1e4ea;--pr:#2457d6;--ok:#15803d;--er:#b91c1c;--erb:#fee2e2;--okb:#dcfce7;--wnb:#fef3c7;--wn:#b45309;--inb:#dbeafe;--in:#1d4ed8;--grb:#e2e8f0;--gr:#475569;--pub:#ede9fe;--pu:#6d28d9;--cyb:#cffafe;--cy:#0e7490}
+@media (prefers-color-scheme:dark){:root{--bg:#12151c;--card:#1b202b;--tx:#e8ebf2;--mu:#98a1b5;--bd:#2c3342;--pr:#6b95ff;--ok:#4ade80;--er:#f87171;--erb:#3d1818;--okb:#14351f;--wnb:#3a2c0b;--wn:#fbbf24;--inb:#1c2b52;--in:#93b4ff;--grb:#2c3342;--gr:#cbd5e1;--pub:#2e2352;--pu:#c4b5fd;--cyb:#12353d;--cy:#67e8f9}}
+:root{padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 'Noto Sans Thai',system-ui,sans-serif}
-.wrap{max-width:1000px;margin:0 auto;padding:16px}
-header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.wrap{max-width:1300px;margin:0 auto;padding:16px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
 h1{font-size:20px;margin:0}
-.role{display:flex;background:var(--grb);border-radius:10px;padding:3px}
+.role{display:flex;background:var(--grb);border-radius:10px;padding:3px;flex-wrap:wrap}
 .role button{border:0;background:none;color:var(--tx);padding:7px 14px;border-radius:8px;font:inherit;cursor:pointer}
 .role button.on{background:var(--pr);color:#fff}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
-.stat{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;cursor:pointer}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;margin-bottom:12px}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:8px 12px;cursor:pointer;position:relative}
 .stat.on{outline:2px solid var(--pr)}
-.stat b{display:block;font-size:22px}.stat span{color:var(--mu);font-size:13px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
-.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end}
-label{font-size:12px;color:var(--mu);display:block;margin-bottom:3px}
-input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+.stat b{display:block;font-size:22px;line-height:1.2}.stat span{color:var(--mu);font-size:12px;display:block}
+.stat i{position:absolute;top:8px;right:8px;font-style:normal;font-size:11px;background:var(--pr);color:#fff;border-radius:99px;padding:0 8px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.mu{color:var(--mu);font-size:13px}
+input{padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+.bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}.bar #q{flex:1;min-width:160px}
 button.b{border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer;background:var(--pr);color:#fff}
-button.b.ok{background:var(--ok);color:#fff}button.b.er{background:var(--er);color:#fff}
-button.b.gh{background:var(--grb);color:var(--tx)}
+button.b.ok{background:var(--ok)}button.b.er{background:var(--er)}button.b.gh{background:var(--grb);color:var(--tx)}
+button.b:disabled{opacity:.4;cursor:not-allowed}
 @media (prefers-color-scheme:dark){button.b.ok,button.b.er{color:#111}}
-.bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}.bar input{flex:1;min-width:150px}.bar select{width:auto;max-width:240px;flex:1;min-width:150px}
-.bill{display:grid;grid-template-columns:1fr auto;gap:8px}
-.no{font-weight:700}.mu{color:var(--mu);font-size:13px}
-.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:500}
-.s-opened{background:var(--grb);color:var(--gr)}.s-returned{background:var(--wnb);color:var(--wn)}
-.s-confirmed{background:var(--okb);color:var(--ok)}.s-rejected{background:var(--erb);color:var(--er)}
-.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.note{background:var(--erb);color:var(--er);border-radius:8px;padding:6px 10px;margin-top:8px;font-size:13px}
-details{margin-top:8px;font-size:13px;color:var(--mu)}
-.empty{text-align:center;color:var(--mu);padding:30px}
-.warn{background:var(--wnb);color:var(--wn);padding:8px 12px;border-radius:8px;margin-bottom:12px;font-size:13px}
-.amt{text-align:right;font-weight:700}
-.wrap{max-width:1300px}
-:root{--yl:#fff3a3}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--yl:#5a4a0a}}:root[data-theme="dark"]{--yl:#5a4a0a}
+.ab{display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:sticky;top:0;z-index:5;border-color:var(--pr)}
 .tw{overflow-x:auto;background:var(--card);border:1px solid var(--bd);border-radius:12px}
-table{border-collapse:collapse;width:100%;min-width:1150px;font-size:14px}
+table{border-collapse:collapse;width:100%;min-width:1050px;font-size:14px}
 th,td{padding:7px 9px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:middle}
-th{font-size:12px;color:var(--mu);background:var(--bg);position:sticky;top:0}
-.r{text-align:right}.c{text-align:center}
-th.y,td.y{background:var(--yl);color:var(--tx)}th.y2,td.y2{background:var(--inb);color:var(--tx)}
-td input[type=checkbox]{width:20px;height:20px;cursor:pointer}td input[type=date]{padding:4px 6px;width:140px}
-td .note{margin-top:4px}td .b{padding:5px 10px;font-size:13px}
+th{font-size:12px;color:var(--mu);background:var(--bg)}
+.r{text-align:right}.no{font-weight:700}
+td input[type=checkbox],th input[type=checkbox]{width:20px;height:20px;cursor:pointer}
+tr.g td{background:var(--cyb);color:var(--cy);font-weight:500}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:500;white-space:nowrap}
+.s0{background:var(--grb);color:var(--gr)}.s1{background:var(--inb);color:var(--in)}.s2{background:var(--wnb);color:var(--wn)}
+.s3{background:var(--pub);color:var(--pu)}.s4{background:var(--cyb);color:var(--cy)}.s5{background:var(--okb);color:var(--ok)}.s6{background:var(--erb);color:var(--er)}
+.note{background:var(--erb);color:var(--er);border-radius:8px;padding:4px 10px;margin-top:4px;font-size:13px}
+.warn{background:var(--wnb);color:var(--wn);padding:8px 12px;border-radius:8px;margin-bottom:12px;font-size:13px}
+.empty{text-align:center;color:var(--mu);padding:30px}
+#ph{display:none}
+@media print{header,#stats,.bar,#ab,#imp,#warn{display:none!important}.np{display:none}#ph{display:block;margin-bottom:10px}body{background:#fff;color:#000}.tw{border:0}table{min-width:0}.tag{border:1px solid #999;background:none;color:#000}}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -59,250 +53,213 @@ td .note{margin-top:4px}td .b{padding:5px 10px;font-size:13px}
 </head>
 <body>
 <div class="wrap">
-<header>
-  <h1>📄 ยืนยันบิลขายที่รับคืนจาก DC</h1>
-  <div class="role" id="role"></div>
-</header>
+<header><h1>📄 ติดตามบิลขายที่รับคืนจาก DC</h1><div class="role" id="role"></div></header>
 <div id="warn"></div>
 <div class="stats" id="stats"></div>
-<div id="formBox"></div>
+<div class="card" id="imp"><b>📥 อัพโหลดรายการ Invoice (.xlsx)</b> <span class="mu">คอลัมน์: เลขที่ · วันที่ · อ้างอิงPO · ลูกค้า · มูลค่าสินค้า · VAT. · รวมทั้งสิ้น — เลขที่เดิมจะไม่ถูกเปลี่ยนสถานะ</span>
+<div style="margin-top:8px"><input type="file" id="file" accept=".xlsx,.xls,.csv"> <span class="mu" id="prog"></span></div></div>
 <div class="bar">
-  <input id="q" placeholder="ค้นหา เลขที่บิล / ลูกค้า / DC">
-  <input id="fpo" placeholder="ค้นหาเลขที่ PO">
-  <select id="fcu"></select>
-  <select id="fst"><option value="all">ทุกสถานะ</option><option value="opened">รอรับคืน</option><option value="returned">รอบัญชียืนยัน</option><option value="rejected">ส่งกลับแก้ไข</option><option value="confirmed">ยืนยันแล้ว</option></select>
-  <button class="b gh" id="clr">ล้างตัวกรอง</button>
-  <button class="b gh" id="csv">⬇ ส่งออก CSV</button>
-  <button class="b er" id="wipe">🗑 ล้างข้อมูลทั้งหมด</button>
+  <input id="q" placeholder="ค้นหา เลขที่บิล / ลูกค้า / PO">
+  <label class="mu">วันที่ดำเนินการ <input type="date" id="dt"></label>
+  <button class="b gh" id="prt">🖨 พิมพ์รายการ</button>
+  <button class="b gh" id="csv">⬇ CSV</button>
+  <button class="b er" id="wipe" style="display:none">🗑 ล้างข้อมูลทั้งหมด</button>
 </div>
+<div id="ab"></div>
+<div id="ph"></div>
 <div id="list"></div>
 </div>
 <script>
-const ST={opened:'เปิดบิลแล้ว (รอรับคืนจาก DC)',returned:'รอบัญชียืนยัน',confirmed:'บัญชียืนยันแล้ว',rejected:'บัญชีส่งกลับแก้ไข'};
-const S={bills:[],role:'sales',filter:'all',q:'',po:'',cu:'',sd:1};
-try{const r=localStorage.getItem('bc_role');if(r==='sales'||r==='acct')S.role=r}catch(e){}
-const PW='WHO';
-function unlocked(){try{return sessionStorage.getItem('bc_unlock')==='1'}catch(e){return false}}
-if(S.role==='acct'&&!unlocked())S.role='sales';
-function setRole(r){S.role=r;try{localStorage.setItem('bc_role',r)}catch(x){}render()}
-function askPw(ok){
-  const o=document.createElement('div');
-  o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:50';
-  o.innerHTML='<div class="card" style="width:min(320px,90vw);margin:0"><b>🔒 ฝ่ายบัญชี</b><div class="mu" style="margin:6px 0">กรุณาใส่รหัสผ่านเพื่อเข้าใช้งาน</div><input type="password" id="pw" autocomplete="off"><div id="pwe" class="mu" style="color:var(--er);min-height:20px"></div><div class="acts"><button class="b" id="pwok">เข้าสู่ระบบ</button><button class="b gh" id="pwno">ยกเลิก</button></div></div>';
-  document.body.appendChild(o);const i=o.querySelector('#pw');i.focus();
-  const go=()=>{if(i.value.trim().toUpperCase()===PW){try{sessionStorage.setItem('bc_unlock','1')}catch(e){}o.remove();ok()}else{o.querySelector('#pwe').textContent='รหัสผ่านไม่ถูกต้อง';i.value='';i.focus()}};
-  o.querySelector('#pwok').onclick=go;o.querySelector('#pwno').onclick=()=>o.remove();
-  i.onkeydown=e=>{if(e.key==='Enter')go();if(e.key==='Escape')o.remove()};
-}
-let col=null,downloads=null;
-const LK='bc_bills_v1';
-function persist(){if(col)return;try{localStorage.setItem(LK,JSON.stringify(S.bills))}catch(e){}}
-function loadLocal(){try{S.bills=JSON.parse(localStorage.getItem(LK)||'[]')}catch(e){S.bills=[]}render()}
+const ROLES={a1:'แอดมิน 1 · รับบิล',a2:'แอดมิน 2 · ตรวจ/เรียง',acct:'บัญชี'};
+const RS={a1:'แอดมิน 1',a2:'แอดมิน 2',acct:'บัญชี'};
+/* สถานะ: [ชื่อ, สี] ตามลำดับขั้นตอน */
+const ST={opened:['1 รอรับคืนจาก DC','s0'],received:['2 รับคืนแล้ว รอส่งแอดมิน 2','s1'],checking:['3 รอแอดมิน 2 ตรวจ','s2'],checked:['4 ตรวจ/เรียงแล้ว รอส่งบัญชี','s3'],sent:['5 รอบัญชียืนยัน','s4'],confirmed:['6 บัญชีรับแล้ว','s5'],issue:['⚠ ส่งกลับแก้ไข','s6']};
+/* งานของแต่ละ role: from=สถานะต้นทาง to=สถานะปลายทาง date=ช่องวันที่ที่บันทึก */
+const ACT={
+ receive:{role:'a1',from:'opened',to:'received',date:'recvDate',label:'✓ ได้รับบิลคืนจาก DC',c:'ok'},
+ hand:{role:'a1',from:'received',to:'checking',label:'ส่งให้แอดมิน 2 ตรวจ'},
+ undo1:{role:'a1',from:'received',to:'opened',label:'↩ ยกเลิกการรับ',c:'gh'},
+ resend:{role:'a1',from:'issue',to:'checking',label:'แก้ไขแล้ว ส่งแอดมิน 2 อีกครั้ง'},
+ check:{role:'a2',from:'checking',to:'checked',date:'chkDate',label:'✓ ตรวจถูกต้อง (เรียงตามเลขที่บิลแล้ว)',c:'ok'},
+ bad2:{role:'a2',from:'checking',to:'issue',why:1,label:'ส่งกลับแอดมิน 1',c:'er'},
+ toAcc:{role:'a2',from:'checked',to:'sent',date:'sendDate',label:'ส่งบัญชี',batch:1},
+ undo2:{role:'a2',from:'checked',to:'checking',label:'↩ กลับไปตรวจใหม่',c:'gh'},
+ confirm:{role:'acct',from:'sent',to:'confirmed',date:'accDate',label:'✓ บัญชีรับบิลแล้ว',c:'ok'},
+ bad3:{role:'acct',from:'sent',to:'issue',why:1,label:'ไม่ครบ / ส่งกลับ',c:'er'},
+ reset:{role:'acct',from:'*',to:'opened',why:1,reset:1,label:'🔄 รีเซตบิลกลับเป็นเริ่มต้น',c:'gh'}
+};
+const MINE={a1:['opened','received','issue'],a2:['checking','checked'],acct:['sent']};
+const S={bills:[],role:'a1',f:'opened',q:'',sd:1,sel:new Set()};
+try{const r=localStorage.getItem('bc2_role');if(MINE[r])S.role=r}catch(e){}
+const PW={a1:'AD1',a2:'SL1',acct:'WHO'};
+const unlocked=r=>{try{return sessionStorage.getItem('bc2_u_'+r)==='1'}catch(e){return false}};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today=()=>new Date().toISOString().slice(0,10);
 const fmt=n=>Number(n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
 const now=()=>new Date().toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'});
-const rl=r=>r==='sales'?'ฝ่ายขาย':'ฝ่ายบัญชี';
+const log=(b,act,note)=>(b.history=b.history||[]).push({t:now(),who:RS[S.role],act,note:note||''});
+const get=id=>S.bills.find(b=>b.id===id);
+const acts=()=>Object.entries(ACT).filter(([k,a])=>a.role===S.role&&(a.from===S.f||(a.from==='*'&&S.f!=='opened')));
+const first=r=>MINE[r].find(k=>S.bills.some(b=>b.status===k))||MINE[r][0];
+S.f=MINE[S.role][0];
+$('dt').value=today();
 
-async function save(b){
-  b.updated=Date.now();
-  const i=S.bills.findIndex(x=>x.id===b.id);
-  if(i<0)S.bills.push(b);else S.bills[i]=b;
+let col=null;const LK='bc2_bills';
+const persist=()=>{if(!col)try{localStorage.setItem(LK,JSON.stringify(S.bills))}catch(e){}};
+async function saveMany(a){
+  a.forEach(b=>{b.updated=Date.now();const i=S.bills.findIndex(x=>x.id===b.id);i<0?S.bills.push(b):S.bills[i]=b});
+  if(!col){persist();return}
+  try{const fs=firebase.firestore();
+    for(let i=0;i<a.length;i+=400){const bt=fs.batch();a.slice(i,i+400).forEach(b=>bt.set(col.doc(b.id),JSON.parse(JSON.stringify(b))));await bt.commit()}
+  }catch(e){alert('บันทึกไม่สำเร็จ: '+(e.code||e.message))}
+}
+function setRole(r){S.role=r;S.sel.clear();S.f=first(r);try{localStorage.setItem('bc2_role',r)}catch(e){}render()}
+function askPw(r0,must){
+  const o=document.createElement('div');
+  o.style.cssText='position:fixed;inset:0;background:'+(must?'var(--bg)':'rgba(0,0,0,.5)')+';display:flex;align-items:center;justify-content:center;z-index:50';
+  o.innerHTML='<div class="card" style="width:min(320px,90vw);margin:0"><b>🔒 เข้าสู่ระบบ</b><div class="mu" style="margin:6px 0">เลือกบทบาทและใส่รหัสผ่าน</div><select id="pr" style="width:100%;margin-bottom:8px;padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit">'+Object.keys(ROLES).map(r=>`<option value="${r}"${r===r0?' selected':''}>${ROLES[r]}</option>`).join('')+'</select><input type="password" id="pw" style="width:100%"><div id="pwe" class="mu" style="color:var(--er);min-height:22px"></div><button class="b" id="pwok">เข้าสู่ระบบ</button>'+(must?'':' <button class="b gh" id="pwno">ยกเลิก</button>')+'</div>';
+  document.body.appendChild(o);const i=o.querySelector('#pw');i.focus();
+  const go=()=>{const r=o.querySelector('#pr').value;
+    if(i.value.trim().toUpperCase()===PW[r]){try{sessionStorage.setItem('bc2_u_'+r,'1')}catch(e){}o.remove();setRole(r)}
+    else{o.querySelector('#pwe').textContent='รหัสผ่านไม่ถูกต้อง';i.value='';i.focus()}};
+  o.querySelector('#pwok').onclick=go;
+  if(!must)o.querySelector('#pwno').onclick=()=>o.remove();
+  i.onkeydown=e=>{if(e.key==='Enter')go();if(e.key==='Escape'&&!must)o.remove()};
+}
+
+async function run(k){
+  const A=ACT[k],ids=[...S.sel].filter(id=>get(id)&&(A.from==='*'?get(id).status!=='opened':get(id).status===A.from));
+  if(!ids.length)return;
+  let why='';
+  if(A.why){why=prompt(A.reset?'รีเซต '+ids.length+' ใบ กลับเป็น "รอรับคืนจาก DC" (ล้างวันที่และสถานะที่บันทึกไว้)\nระบุเหตุผล':'เหตุผล / เลขบิลที่ไม่ครบ หรือมีปัญหา');if(!why)return}
+  else if(!confirm(A.label.replace(/^[✓↩ ]+/,'')+' จำนวน '+ids.length+' ใบ ?'))return;
+  const d=$('dt').value||today(),bt='S'+d.replace(/-/g,'')+'-'+new Date().toTimeString().slice(0,5).replace(':','');
+  const out=ids.map(id=>{
+    const b={...get(id)};b.status=A.to;
+    if(A.date)b[A.date]=d;
+    if(A.reset)['recvDate','chkDate','sendDate','accDate','batch'].forEach(f=>delete b[f]);
+    if(A.batch)b.batch=bt;
+    b.reason=A.to==='issue'?why:'';
+    log(b,A.label.replace(/^[✓↩ ]+/,''),(A.date?'วันที่ '+d:'')+(why?' '+why:''));
+    return b;
+  });
+  S.sel.clear();await saveMany(out);
+  const nx=MINE[S.role].includes(A.to);
   render();
-  if(col){try{await col.doc(b.id).set(JSON.parse(JSON.stringify(b)))}catch(e){alert('บันทึกไม่สำเร็จ: '+(e.message||e.code))}}else persist();
-}
-function log(b,act,note){(b.history=b.history||[]).push({t:now(),who:rl(S.role),act,note:note||''})}
-
-function add(){
-  const no=$('f_no').value.trim(),cu=$('f_cu').value.trim(),am=parseFloat($('f_am').value);
-  if(!no||!cu||!(am>=0)){alert('กรอกเลขที่บิล ลูกค้า และยอดเงินให้ครบ');return}
-  if(S.bills.some(b=>b.no===no)){alert('เลขที่บิลนี้มีอยู่แล้ว');return}
-  const b={id:'b'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),no,customer:cu,amount:am,dc:$('f_dc').value.trim(),openDate:$('f_dt').value||today(),status:'opened',history:[]};
-  log(b,'เปิดบิล');save(b);
-  ['f_no','f_cu','f_am','f_dc'].forEach(i=>$(i).value='');
-}
-function act(id,a){
-  const b=S.bills.find(x=>x.id===id);if(!b)return;
-  if(a==='return'){const d=prompt('วันที่รับบิลคืนจาก DC (ปปปป-ดด-วว)',today());if(!d)return;const n=prompt('หมายเหตุ (ถ้ามี)','')||'';b.status='returned';b.returnDate=d;b.rejectReason='';log(b,'รับบิลคืนจาก DC ส่งให้บัญชี','วันที่ '+d+(n?' · '+n:''))}
-  if(a==='resubmit'){b.status='returned';if(!b.accDate)b.accDate=b.recvDate||today();log(b,'แก้ไขแล้วส่งให้บัญชีอีกครั้ง')}
-  if(a==='reopen'){const r=prompt('เหตุผลที่ขอบิลกลับ / ยกเลิกการยืนยัน');if(!r)return;b.status='rejected';b.rejectReason='ยกเลิกการยืนยัน: '+r;log(b,'ยกเลิกการยืนยัน (ขอบิลกลับ)',r)}
-  if(a==='confirm'){if(!confirm('ยืนยันบิล '+b.no+' ?'))return;b.status='confirmed';b.rejectReason='';log(b,'ยืนยันบิล')}
-  if(a==='reject'){const r=prompt('เหตุผลที่ส่งกลับ');if(!r)return;b.status='rejected';b.rejectReason=r;log(b,'ส่งกลับแก้ไข',r)}
-  if(a==='del'){if(!confirm('ลบบิล '+b.no+' ?'))return;S.bills=S.bills.filter(x=>x.id!==id);render();if(col)col.doc(id).delete().catch(()=>{});else persist();return}
-  save(b);
 }
 
-const SS={opened:'รอรับคืน',returned:'รอบัญชียืนยัน',confirmed:'ยืนยันแล้ว',rejected:'ส่งกลับแก้ไข'};
-function rowHtml(b){
-  const sales=S.role==='sales',lk=(!sales||b.status==='confirmed')?' disabled':'';
-  let a='';
-  if(sales&&b.status==='rejected')a=`<button class="b" data-a="resubmit" data-id="${b.id}">ส่งบัญชีอีกครั้ง</button>`;
-  if(sales&&b.status==='opened')a=`<button class="b gh" data-a="del" data-id="${b.id}" title="ลบ">✕</button>`;
-  if(!sales&&b.status==='confirmed')a=`<button class="b gh" data-a="reopen" data-id="${b.id}">↩ ยกเลิกยืนยัน (ขอบิลกลับ)</button>`;
-  if(!sales&&b.status==='returned')a=`<button class="b ok" data-a="confirm" data-id="${b.id}">✓ ยืนยัน</button> <button class="b er" data-a="reject" data-id="${b.id}">ส่งกลับ</button>`;
-  const hist=(b.history||[]).map(h=>h.t+' · '+h.who+' · '+h.act+' '+h.note).join('&#10;');
-  return `<tr><td class="no" title="${esc(hist)}">${esc(b.no)}</td><td>${esc(b.openDate)}</td><td>${esc(b.po||'-')}</td><td>${esc(b.customer)}${b.status==='rejected'&&b.rejectReason?`<div class="note">ส่งกลับ: ${esc(b.rejectReason)}</div>`:''}</td><td class="r">${fmt(b.total??b.amount)}</td>
-  <td class="y c"><input type="checkbox" data-k="gotInv" data-id="${b.id}"${b.gotInv?' checked':''}${lk}></td>
-  <td><input type="date" data-k="recvDate" data-id="${b.id}" value="${esc(b.recvDate||'')}"${lk}></td>
-  <td><input type="date" data-k="accDate" data-id="${b.id}" value="${esc(b.accDate||'')}"${(!sales&&(b.status==='returned'||b.status==='confirmed'))?'':' disabled'}></td>
-  <td><span class="tag s-${b.status}">${SS[b.status]}</span></td><td>${a}</td></tr>`;
+function row(b,i,ok){
+  const h=(b.history||[]).map(x=>x.t+' · '+x.who+' · '+x.act+' '+(x.note||'')).join('\n');
+  return `<tr><td class="np">${ok?`<input type="checkbox" data-id="${esc(b.id)}"${S.sel.has(b.id)?' checked':''}>`:''}</td><td class="mu">${i}</td><td class="no" title="${esc(h)}">${esc(b.no)}</td><td>${esc(b.openDate)}</td><td>${esc(b.po||'-')}</td><td>${esc(b.customer)}${b.status==='issue'&&b.reason?`<div class="note">ส่งกลับ: ${esc(b.reason)}</div>`:''}</td><td class="r">${fmt(b.total??b.amount)}</td><td>${esc(b.recvDate||'')}</td><td>${esc(b.sendDate||'')}</td><td>${esc(b.accDate||'')}</td><td><span class="tag ${ST[b.status][1]}">${ST[b.status][0]}</span></td></tr>`;
 }
-document.addEventListener('change',e=>{
-  const t=e.target,k=t.dataset&&t.dataset.k;if(!k)return;
-  const b=S.bills.find(x=>x.id===t.dataset.id);if(!b)return;
-  if(k==='accDate'){if(S.role!=='acct')return;b.accDate=t.value;log(b,'แก้ไขวันที่บัญชีได้รับเอกสาร',t.value||'-');save(b);return}
-  if(b.status==='confirmed'||S.role!=='sales')return;
-  if(k==='recvDate')b.recvDate=t.value;else{b[k]=t.checked;if(t.checked&&!b.recvDate)b.recvDate=today()}
-  if(b.status==='opened'||b.status==='returned'){
-    const ns=(b.gotInv&&b.recvDate)?'returned':'opened';
-    if(ns!==b.status){b.status=ns;if(ns==='returned'){if(!b.accDate)b.accDate=b.recvDate}else b.accDate='';log(b,ns==='returned'?'ได้รับ Invoice ส่งให้บัญชี':'ยกเลิกการส่งให้บัญชี','วันที่ '+(b.recvDate||'-'))}
-  }
-  save(b);
-});
+let rowsNow=[];
 function render(){
-  $('fst').value=S.filter;
-  const cs=[...new Set(S.bills.map(b=>b.customer))].sort((a,b)=>String(a).localeCompare(String(b),'th'));
-  $('fcu').innerHTML='<option value="">ลูกค้าทั้งหมด</option>'+cs.map(c=>`<option value="${esc(c)}"${c===S.cu?' selected':''}>${esc(c)}</option>`).join('');
-  $('role').innerHTML=['sales','acct'].map(r=>`<button class="${S.role===r?'on':''}" data-r="${r}">${rl(r)}</button>`).join('');
-  const cnt=k=>S.bills.filter(b=>k==='all'||b.status===k).length;
-  const sum=k=>S.bills.filter(b=>b.status===k).reduce((a,b)=>a+Number(b.total??b.amount??0),0);
-  $('stats').innerHTML=[['all','ทั้งหมด'],['opened','รอรับคืนจาก DC'],['returned','รอบัญชียืนยัน'],['rejected','ส่งกลับแก้ไข'],['confirmed','ยืนยันแล้ว']]
-   .map(([k,l])=>`<div class="stat ${S.filter===k?'on':''}" data-f="${k}"><b>${cnt(k)}</b><span>${l}${k==='returned'||k==='confirmed'?' · ฿'+fmt(sum(k)):''}</span></div>`).join('');
-  if(S.fb!==S.role){S.fb=S.role;$('formBox').innerHTML=S.role==='sales'?`<div class="card"><b>📥 อัพโหลดรายการ Invoice ประจำวัน (.xlsx)</b><div class="mu">คอลัมน์: เลขที่ · วันที่ · อ้างอิงPO · ลูกค้า · มูลค่าสินค้า · VAT. · รวมทั้งสิ้น — เลขที่ที่มีอยู่แล้วจะถูกข้าม ไม่ทับสถานะเดิม</div><div class="acts"><input type="file" id="file" accept=".xlsx,.xls,.csv" style="max-width:340px"></div><div id="prog" class="mu"></div></div><div class="card"><div class="form">
-   <div><label>เลขที่บิล *</label><input id="f_no"></div><div><label>ลูกค้า *</label><input id="f_cu"></div>
-   <div><label>ยอดเงิน (บาท) *</label><input id="f_am" type="number" step="0.01" min="0"></div>
-   <div><label>DC / คลังสินค้า</label><input id="f_dc"></div><div><label>วันที่เปิดบิล</label><input id="f_dt" type="date" value="${today()}"></div>
-   <div><button class="b" id="add">+ เปิดบิลใหม่</button></div></div></div>`:'';}
-  const q=S.q.toLowerCase();
-  const rows=S.bills.filter(b=>(S.filter==='all'||b.status===S.filter)&&(!S.po||String(b.po||'').toLowerCase().includes(S.po.toLowerCase()))&&(!S.cu||b.customer===S.cu)&&(!q||[b.no,b.customer,b.dc,b.po].join(' ').toLowerCase().includes(q))).sort((a,b)=>S.sd*String(a.no).localeCompare(String(b.no),'en',{numeric:true}));
-  const all=rows.length;rows.length=Math.min(all,150);
-  $('list').innerHTML=(all>150?`<div class="warn">แสดง 150 จาก ${all} รายการ — ใช้ค้นหาหรือกรองสถานะเพื่อดูที่เหลือ</div>`:'')+(rows.length?`<div class="tw"><table><thead><tr><th data-sort="1" style="cursor:pointer" title="คลิกเพื่อสลับการเรียง">เลขที่ ${S.sd>0?'▲':'▼'}</th><th>วันที่</th><th>PO</th><th>ลูกค้า</th><th class="r">รวมทั้งสิ้น</th><th class="y c">ได้รับ Invoice</th><th>วันที่ส่งเอกสารบัญชี</th><th>วันที่บัญชีได้รับเอกสาร</th><th>สถานะ</th><th></th></tr></thead><tbody>${rows.map(rowHtml).join('')}</tbody></table></div>`:'<div class="empty">ไม่มีรายการบิล</div>');
+  S.sel=new Set([...S.sel].filter(id=>get(id)));
+  const B=S.bills,cnt=k=>B.filter(b=>k==='all'||b.status===k).length,sum=k=>B.filter(b=>b.status===k).reduce((a,b)=>a+Number(b.total??b.amount??0),0);
+  $('role').innerHTML=Object.keys(ROLES).map(r=>`<button class="${S.role===r?'on':''}" data-r="${r}">${ROLES[r]}</button>`).join('');
+  $('stats').innerHTML=[['all','ทั้งหมด'],...Object.entries(ST).map(([k,v])=>[k,v[0]])].map(([k,l])=>`<div class="stat ${S.f===k?'on':''}" data-f="${k}">${MINE[S.role].includes(k)&&cnt(k)?'<i>งานของคุณ</i>':''}<b>${cnt(k)}</b><span>${l}</span>${k==='sent'||k==='confirmed'?`<span>฿${fmt(sum(k))}</span>`:''}</div>`).join('');
+  $('imp').style.display=S.role==='a1'?'':'none';
+  $('wipe').style.display=S.role==='acct'?'':'none';
+  const q=S.q.toLowerCase(),A=acts();
+  const rows=B.filter(b=>(S.f==='all'||b.status===S.f)&&(!q||[b.no,b.customer,b.po].join(' ').toLowerCase().includes(q)))
+    .sort((a,b)=>(S.f==='sent'?String(a.batch||'').localeCompare(String(b.batch||'')):0)||S.sd*String(a.no).localeCompare(String(b.no),'en',{numeric:true}));
+  const all=rows.length;rows.length=Math.min(all,300);rowsNow=rows;
+  const vis=rows.filter(b=>A.length),selAll=vis.length&&vis.every(b=>S.sel.has(b.id));
+  $('ab').innerHTML=A.length?`<div class="card ab"><b>เลือกแล้ว ${S.sel.size} ใบ</b>${A.map(([k,a])=>`<button class="b ${a.c||''}" data-do="${k}"${S.sel.size?'':' disabled'}>${a.label}</button>`).join('')}</div>`
+    :`<div class="mu" style="margin-bottom:10px">${S.f==='all'?'ดูทุกสถานะ — เลือกการ์ดสถานะด้านบนเพื่อทำงาน':'สถานะนี้ไม่ใช่งานของ '+RS[S.role]+' (ดูอย่างเดียว)'}</div>`;
+  let h='',i=0,lastB=null;
+  for(const b of rows){
+    if(S.f==='sent'&&b.batch!==lastB){lastB=b.batch;h+=`<tr class="g"><td colspan="11">ชุดส่งบัญชี ${esc(b.batch||'-')} · ${rows.filter(x=>x.batch===b.batch).length} ใบ</td></tr>`;i=0}
+    h+=row(b,++i,A.length>0);
+  }
+  $('list').innerHTML=(all>300?`<div class="warn">แสดง 300 จาก ${all} รายการ — ใช้ค้นหาเพื่อดูที่เหลือ</div>`:'')+(rows.length?`<div class="tw"><table><thead><tr><th class="np">${A.length?`<input type="checkbox" id="sa"${selAll?' checked':''}>`:''}</th><th>#</th><th data-sort="1" style="cursor:pointer" title="สลับการเรียง">เลขที่บิล ${S.sd>0?'▲':'▼'}</th><th>วันที่บิล</th><th>PO</th><th>ลูกค้า</th><th class="r">รวมทั้งสิ้น</th><th>รับคืนจาก DC</th><th>ส่งบัญชี</th><th>บัญชีรับ</th><th>สถานะ</th></tr></thead><tbody>${h}</tbody></table></div>`:'<div class="empty">ไม่มีรายการในสถานะนี้</div>');
 }
-
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-r],[data-f],[data-a],[data-sort],#add,#csv,#clr,#wipe');if(!t)return;
-  if(t.dataset.r){const r=t.dataset.r;if(r==='acct'&&!unlocked()){askPw(()=>setRole('acct'));return}setRole(r)}
-  else if(t.dataset.f){S.filter=t.dataset.f;render()}
+  const t=e.target.closest('[data-r],[data-f],[data-do],[data-sort],#csv,#prt,#sa,#wipe');if(!t)return;
+  if(t.dataset.r){const r=t.dataset.r;if(!unlocked(r)){askPw(r,false);return}setRole(r)}
+  else if(t.dataset.f){S.f=t.dataset.f;S.sel.clear();render()}
+  else if(t.dataset.do)run(t.dataset.do);
   else if(t.dataset.sort){S.sd*=-1;render()}
-  else if(t.dataset.a)act(t.dataset.id,t.dataset.a);
-  else if(t.id==='add')add();
+  else if(t.id==='sa'){const on=t.checked;rowsNow.forEach(b=>on?S.sel.add(b.id):S.sel.delete(b.id));render()}
   else if(t.id==='csv')exportCsv();
   else if(t.id==='wipe')wipeAll();
-  else if(t.id==='clr'){S.q=S.po=S.cu='';S.filter='all';$('q').value='';$('fpo').value='';render()}
+  else if(t.id==='prt'){
+    const tot=rowsNow.reduce((a,b)=>a+Number(b.total??b.amount??0),0);
+    $('ph').innerHTML=`<h2 style="margin:0">รายการบิล — ${esc(S.f==='all'?'ทุกสถานะ':ST[S.f][0])}</h2><div>พิมพ์วันที่ ${now()} · ${rowsNow.length} ใบ · รวม ฿${fmt(tot)} · เรียงตามเลขที่บิล</div>`;
+    window.print();
+  }
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset&&t.dataset.id&&t.type==='checkbox'){t.checked?S.sel.add(t.dataset.id):S.sel.delete(t.dataset.id);render()}
+  if(t.id==='file'&&t.files[0]){imp(t.files[0]);t.value=''}
 });
 $('q').addEventListener('input',e=>{S.q=e.target.value;render()});
-$('fpo').addEventListener('input',e=>{S.po=e.target.value.trim();render()});
-$('fcu').addEventListener('change',e=>{S.cu=e.target.value;render()});
-$('fst').addEventListener('change',e=>{S.filter=e.target.value;render()});
 
 function toIso(v){
   let y,m,d;
   if(typeof v==='number'){const t=new Date(Date.UTC(1899,11,30)+Math.round(v)*864e5);y=t.getUTCFullYear();m=t.getUTCMonth()+1;d=t.getUTCDate()}
   else{const p=String(v||'').trim().match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);if(!p)return null;d=+p[1];m=+p[2];y=+p[3]}
-  if(y<100)y=y>=50?y+1957:2000+y;
-  else if(y>=1950&&y<2000)y+=57; /* ปี พ.ศ. 2 หลักที่ Excel แปลงเป็น 19xx */
-  else if(y>=2400)y-=543;
+  if(y<100)y=y>=50?y+1957:2000+y;else if(y>=1950&&y<2000)y+=57;else if(y>=2400)y-=543;
   return y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
 }
 const num=v=>{const n=typeof v==='number'?v:parseFloat(String(v).replace(/,/g,''));return isFinite(n)?Math.round(n*100)/100:null};
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-async function importFile(f){
+async function imp(f){
   const P=$('prog');
   if(typeof XLSX==='undefined'){P.textContent='โหลดตัวอ่าน Excel ไม่สำเร็จ ลองรีเฟรชหน้า';return}
   try{
-    const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});
-    const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:''});
-    const hi=rows.findIndex(r=>r.some(c=>String(c).trim()==='เลขที่'));
-    if(hi<0){P.textContent='ไม่พบหัวคอลัมน์ "เลขที่" ในไฟล์';return}
-    const H=rows[hi].map(c=>String(c).replace(/\s/g,'').replace(/\.$/,''));
-    const ix={no:H.indexOf('เลขที่'),dt:H.indexOf('วันที่'),po:H.indexOf('อ้างอิงPO'),cu:H.indexOf('ลูกค้า'),am:H.indexOf('มูลค่าสินค้า'),vat:H.indexOf('VAT'),tot:H.indexOf('รวมทั้งสิ้น')};
-    const miss=Object.entries(ix).filter(([k,v])=>v<0).map(([k])=>k);
-    if(miss.length){P.textContent='หัวคอลัมน์ไม่ครบ ขาด: '+miss.join(', ');return}
-    const byNo=new Map(S.bills.map(b=>[b.no,b])),seen=new Set(),add=[],upd=[],chg=[];let dup=0,bad=0,same=0;
-    const LB={customer:'ชื่อลูกค้า',po:'PO',amount:'มูลค่า',vat:'VAT',total:'รวม',openDate:'วันที่'};
-    for(const r of rows.slice(hi+1)){
-      const no=String(r[ix.no]??'').trim();if(!no)continue;
-      const am=num(r[ix.am]),vat=num(r[ix.vat]),tot=num(r[ix.tot]),dt=toIso(r[ix.dt]);
-      if(am==null||tot==null||!dt){bad++;continue}
-      if(seen.has(no)){dup++;continue}
-      seen.add(no);
-      const n={po:String(r[ix.po]).trim(),customer:String(r[ix.cu]).replace(/\u00a0/g,' ').trim(),amount:am,vat,total:tot,openDate:dt};
-      const old=byNo.get(no);
-      if(old){
-        const ch=Object.keys(n).filter(k=>String(old[k]??'')!==String(n[k]));
-        if(!ch.length){same++;continue}
-        const note=ch.map(k=>LB[k]+': '+(old[k]??'-')+' → '+n[k]).join('; ');
-        upd.push({...old,...n,history:[...(old.history||[]),{t:now(),who:rl(S.role),act:'อัพเดตจากไฟล์',note}]});
-        chg.push(no+' — '+note);
-      }else add.push({id:no.replace(/[^A-Za-z0-9_\-.~:@+]/g,'_'),no,...n,dc:'',status:'opened',history:[{t:now(),who:rl(S.role),act:'นำเข้าจากไฟล์',note:f.name}]});
+    const wb=XLSX.read(await f.arrayBuffer(),{type:'array'}),R=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:''});
+    const hi=R.findIndex(r=>r.some(c=>String(c).trim()==='เลขที่'));if(hi<0){P.textContent='ไม่พบหัวคอลัมน์ "เลขที่"';return}
+    const H=R[hi].map(c=>String(c).replace(/\s/g,'').replace(/\.$/,'')),X=n=>H.indexOf(n);
+    const ix={no:X('เลขที่'),dt:X('วันที่'),po:X('อ้างอิงPO'),cu:X('ลูกค้า'),am:X('มูลค่าสินค้า'),vat:X('VAT'),tot:X('รวมทั้งสิ้น')};
+    if(Object.values(ix).some(v=>v<0)){P.textContent='หัวคอลัมน์ไม่ครบ';return}
+    const by=new Map(S.bills.map(b=>[b.no,b])),out=[],seen=new Set();let nw=0,up=0,same=0,bad=0;
+    for(const r of R.slice(hi+1)){
+      const no=String(r[ix.no]??'').trim();if(!no||seen.has(no))continue;seen.add(no);
+      const am=num(r[ix.am]),tot=num(r[ix.tot]),dt=toIso(r[ix.dt]);if(am==null||tot==null||!dt){bad++;continue}
+      const n={po:String(r[ix.po]).trim(),customer:String(r[ix.cu]).replace(/\u00a0/g,' ').trim(),amount:am,vat:num(r[ix.vat]),total:tot,openDate:dt},o=by.get(no);
+      if(o){if(Object.keys(n).every(k=>String(o[k]??'')===String(n[k]))){same++;continue}const b={...o,...n};log(b,'อัพเดตจากไฟล์',f.name);out.push(b);up++}
+      else{const b={id:no.replace(/[^A-Za-z0-9_\-.~:@+]/g,'_'),no,...n,dc:'',status:'opened',history:[]};log(b,'นำเข้าจากไฟล์',f.name);out.push(b);nw++}
     }
-    if(!add.length&&!upd.length){P.textContent='ไม่มีรายการใหม่หรือข้อมูลที่เปลี่ยน (ไม่เปลี่ยน '+same+(bad?' · ข้อมูลไม่ถูกต้อง '+bad:'')+')';return}
-    if(!confirm('รายการใหม่ '+add.length+' ใบ · อัพเดตข้อมูลที่เปลี่ยน '+upd.length+' ใบ · ไม่เปลี่ยน '+same+(bad?' · ข้อมูลไม่ถูกต้อง '+bad:'')+(upd.length?'\n\nตัวอย่างที่จะอัพเดต:\n'+chg.slice(0,5).join('\n')+(chg.length>5?'\n...':''):'')+'\n\n(สถานะ การติ๊ก และวันที่ส่งเอกสารของบิลเดิมจะไม่ถูกเปลี่ยน)\n\nดำเนินการเลยหรือไม่?')){P.textContent='ยกเลิกการนำเข้า';return}
-    let ok=0,fail=0;
-    const jobs=[...add,...upd];
-    for(const b of jobs){
-      b.updated=Date.now();
-      if(!col){const i=S.bills.findIndex(x=>x.id===b.id);if(i<0)S.bills.push(b);else S.bills[i]=b;ok++;continue}
-      let done=false;
-      for(let k=0;k<4&&!done;k++){
-        try{await col.doc(b.id).set(JSON.parse(JSON.stringify(b)));done=true;ok++}
-        catch(e){if(e.code==='permission-denied'||e.code==='resource-exhausted'||e.code==='quota_exceeded'){P.textContent='เขียนฐานข้อมูลไม่ได้ ('+e.code+') นำเข้าได้ '+ok+' ใบ — ตรวจสอบ Firestore Rules';return}await sleep(500*(k+1))}
-      }
-      if(!done)fail++;
-      if((ok+fail)%10===0)P.textContent='กำลังนำเข้า '+(ok+fail)+' / '+jobs.length+' ...';
-    }
-    P.textContent='✓ สำเร็จ '+ok+' ใบ (ใหม่ '+add.length+' · อัพเดต '+upd.length+') · ไม่เปลี่ยน '+same+(bad?' · ข้อมูลไม่ถูกต้อง '+bad:'')+(fail?' · ล้มเหลว '+fail+' (อัพโหลดไฟล์ซ้ำเพื่อลองใหม่)':'');
-    persist();render();
+    if(!out.length){P.textContent='ไม่มีรายการใหม่หรือที่เปลี่ยน (เหมือนเดิม '+same+(bad?' · ไม่ถูกต้อง '+bad:'')+')';return}
+    if(!confirm('รายการใหม่ '+nw+' ใบ · อัพเดตข้อมูล '+up+' ใบ · เหมือนเดิม '+same+(bad?' · ไม่ถูกต้อง '+bad:'')+'\n(สถานะของบิลเดิมจะไม่ถูกเปลี่ยน)\n\nดำเนินการเลยหรือไม่?')){P.textContent='ยกเลิกการนำเข้า';return}
+    P.textContent='กำลังบันทึก...';await saveMany(out);P.textContent='✓ นำเข้าแล้ว ใหม่ '+nw+' · อัพเดต '+up;render();
   }catch(e){P.textContent='อ่านไฟล์ไม่สำเร็จ: '+(e.message||e)}
 }
-document.addEventListener('change',e=>{if(e.target.id==='file'&&e.target.files[0]){importFile(e.target.files[0]);e.target.value=''}});
-
-async function exportCsv(){
-  const h=['เลขที่บิล','อ้างอิงPO','ลูกค้า','มูลค่าสินค้า','VAT','รวมทั้งสิ้น','DC','วันที่เปิดบิล','วันที่ส่งเอกสารบัญชี','วันที่บัญชีได้รับเอกสาร','สถานะ'];
-  const c=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-  const csv='\ufeff'+[h,...S.bills.map(b=>[b.no,b.po||'',b.customer,b.amount,b.vat??'',b.total??b.amount,b.dc,b.openDate,b.recvDate||b.returnDate||'',b.accDate||'',ST[b.status]])].map(r=>r.map(c).join(',')).join('\n');
-  if(!downloads){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='bills-'+today()+'.csv';document.body.appendChild(a);a.click();a.remove();return}
-  try{await downloads.save({filename:'bills-'+today()+'.csv',data:csv})}catch(e){}
-}
-
-render();
-const FB={
-  apiKey:"AIzaSyDnK6WRc7IsShH02aBgmlIAHU1o6ZQKncs",
-  authDomain:"stock-office-supplies.firebaseapp.com",
-  projectId:"stock-office-supplies",
-  storageBucket:"stock-office-supplies.firebasestorage.app",
-  messagingSenderId:"121823320554",
-  appId:"1:121823320554:web:a7b90f9f03c42e09c07a93",
-  measurementId:"G-7R40WV730P"
-};
-const COLLECTION='dc_bills'; /* แยกจากข้อมูลอื่นในโปรเจกต์ stock-office-supplies */
 async function wipeAll(){
+  if(S.role!=='acct')return;
   if(prompt('การล้างข้อมูลจะลบบิลทั้งหมดถาวร และทุกคนที่ใช้งานจะเห็นว่าข้อมูลหาย\nพิมพ์ ล้างข้อมูล เพื่อยืนยัน')!=='ล้างข้อมูล')return;
   try{
-    if(col){
-      const fs=firebase.firestore(),snap=await col.get();let bt=fs.batch(),n=0;
-      for(const d of snap.docs){bt.delete(d.ref);if(++n%400===0){await bt.commit();bt=fs.batch()}}
-      await bt.commit();
-    }else{S.bills=[];persist()}
-    try{localStorage.removeItem(LK)}catch(e){}
-    if(!col){render()}
-    alert('ล้างข้อมูลเรียบร้อย');
-  }catch(e){alert('ล้างข้อมูลไม่สำเร็จ: '+(e.code||'')+' '+(e.message||e))}
+    if(col){const fs=firebase.firestore(),snap=await col.get();
+      for(let i=0;i<snap.docs.length;i+=400){const bt=fs.batch();snap.docs.slice(i,i+400).forEach(d=>bt.delete(d.ref));await bt.commit()}}
+    S.bills=[];S.sel.clear();S.q='';$('q').value='';try{localStorage.removeItem(LK)}catch(e){}
+    render();alert('ล้างข้อมูลเรียบร้อย กลับเป็นข้อมูลเริ่มต้นแล้ว');
+  }catch(e){alert('ล้างข้อมูลไม่สำเร็จ: '+(e.code||e.message))}
 }
+function exportCsv(){
+  const h=['เลขที่บิล','อ้างอิงPO','ลูกค้า','มูลค่าสินค้า','VAT','รวมทั้งสิ้น','วันที่บิล','วันที่รับคืนจาก DC','วันที่ตรวจเสร็จ','วันที่ส่งบัญชี','วันที่บัญชีรับ','ชุดส่งบัญชี','สถานะ'];
+  const c=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const rows=[...S.bills].sort((a,b)=>String(a.no).localeCompare(String(b.no),'en',{numeric:true}));
+  const csv='\ufeff'+[h,...rows.map(b=>[b.no,b.po||'',b.customer,b.amount,b.vat??'',b.total??b.amount,b.openDate,b.recvDate||'',b.chkDate||'',b.sendDate||'',b.accDate||'',b.batch||'',ST[b.status][0]])].map(r=>r.map(c).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='bills-'+today()+'.csv';document.body.appendChild(a);a.click();a.remove();
+}
+
+const LEGACY={returned:'sent',rejected:'issue'}; /* รองรับข้อมูลจากแอพเวอร์ชันเดิม */
+const norm=b=>({...b,status:LEGACY[b.status]||b.status,reason:b.reason||b.rejectReason||''});
+render();
+if(!unlocked(S.role))askPw(S.role,true);
+const FB={apiKey:"AIzaSyDnK6WRc7IsShH02aBgmlIAHU1o6ZQKncs",authDomain:"stock-office-supplies.firebaseapp.com",projectId:"stock-office-supplies",storageBucket:"stock-office-supplies.firebasestorage.app",messagingSenderId:"121823320554",appId:"1:121823320554:web:a7b90f9f03c42e09c07a93",measurementId:"G-7R40WV730P"};
 (function(){
   try{
     if(typeof firebase==='undefined')throw new Error('โหลด Firebase SDK ไม่สำเร็จ (ตรวจสอบอินเทอร์เน็ต)');
     firebase.initializeApp(FB);
-    col=firebase.firestore().collection(COLLECTION);
-    try{localStorage.removeItem(LK)}catch(e){}
-    $('warn').innerHTML='';
-    col.onSnapshot(s=>{S.bills=s.docs.map(d=>({id:d.id,...d.data()}));clearTimeout(S.rt);S.rt=setTimeout(render,150)},
+    col=firebase.firestore().collection('dc_bills');
+    col.onSnapshot(s=>{S.bills=s.docs.map(d=>norm({id:d.id,...d.data()}));clearTimeout(S.rt);S.rt=setTimeout(render,150)},
       e=>{$('warn').innerHTML='<div class="warn">เชื่อมต่อ Firebase ไม่ได้: '+esc((e.code||'')+' '+(e.message||''))+' — ตรวจสอบ Firestore Rules</div>'});
   }catch(e){
-    col=null;
-    $('warn').innerHTML='<div class="warn">'+esc(e.message)+' — ใช้งานแบบเก็บในเครื่องนี้ชั่วคราว</div>';
-    loadLocal();
+    col=null;$('warn').innerHTML='<div class="warn">'+esc(e.message)+' — ใช้งานแบบเก็บในเครื่องนี้ชั่วคราว</div>';
+    try{S.bills=JSON.parse(localStorage.getItem(LK)||'[]').map(norm)}catch(x){S.bills=[]}render();
   }
 })();
 </script>
