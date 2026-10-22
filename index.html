@@ -81,6 +81,19 @@ td .note{margin-top:4px}td .b{padding:5px 10px;font-size:13px}
 const ST={opened:'เปิดบิลแล้ว (รอรับคืนจาก DC)',returned:'รอบัญชียืนยัน',confirmed:'บัญชียืนยันแล้ว',rejected:'บัญชีส่งกลับแก้ไข'};
 const S={bills:[],role:'sales',filter:'all',q:'',po:'',cu:'',sd:1};
 try{const r=localStorage.getItem('bc_role');if(r==='sales'||r==='acct')S.role=r}catch(e){}
+const PW='WHO';
+function unlocked(){try{return sessionStorage.getItem('bc_unlock')==='1'}catch(e){return false}}
+if(S.role==='acct'&&!unlocked())S.role='sales';
+function setRole(r){S.role=r;try{localStorage.setItem('bc_role',r)}catch(x){}render()}
+function askPw(ok){
+  const o=document.createElement('div');
+  o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:50';
+  o.innerHTML='<div class="card" style="width:min(320px,90vw);margin:0"><b>🔒 ฝ่ายบัญชี</b><div class="mu" style="margin:6px 0">กรุณาใส่รหัสผ่านเพื่อเข้าใช้งาน</div><input type="password" id="pw" autocomplete="off"><div id="pwe" class="mu" style="color:var(--er);min-height:20px"></div><div class="acts"><button class="b" id="pwok">เข้าสู่ระบบ</button><button class="b gh" id="pwno">ยกเลิก</button></div></div>';
+  document.body.appendChild(o);const i=o.querySelector('#pw');i.focus();
+  const go=()=>{if(i.value.trim().toUpperCase()===PW){try{sessionStorage.setItem('bc_unlock','1')}catch(e){}o.remove();ok()}else{o.querySelector('#pwe').textContent='รหัสผ่านไม่ถูกต้อง';i.value='';i.focus()}};
+  o.querySelector('#pwok').onclick=go;o.querySelector('#pwno').onclick=()=>o.remove();
+  i.onkeydown=e=>{if(e.key==='Enter')go();if(e.key==='Escape')o.remove()};
+}
 let col=null,downloads=null;
 const LK='bc_bills_v1';
 function persist(){if(col)return;try{localStorage.setItem(LK,JSON.stringify(S.bills))}catch(e){}}
@@ -169,7 +182,7 @@ function render(){
 
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-r],[data-f],[data-a],[data-sort],#add,#csv,#clr,#wipe');if(!t)return;
-  if(t.dataset.r){S.role=t.dataset.r;try{localStorage.setItem('bc_role',S.role)}catch(x){}render()}
+  if(t.dataset.r){const r=t.dataset.r;if(r==='acct'&&!unlocked()){askPw(()=>setRole('acct'));return}setRole(r)}
   else if(t.dataset.f){S.filter=t.dataset.f;render()}
   else if(t.dataset.sort){S.sd*=-1;render()}
   else if(t.dataset.a)act(t.dataset.id,t.dataset.a);
