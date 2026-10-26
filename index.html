@@ -45,7 +45,7 @@ tr.g td{background:var(--cyb);color:var(--cy);font-weight:500}
 .warn{background:var(--wnb);color:var(--wn);padding:8px 12px;border-radius:8px;margin-bottom:12px;font-size:13px}
 .empty{text-align:center;color:var(--mu);padding:30px}
 #ph{display:none}
-@media print{header,#stats,.bar,#ab,#imp,#warn{display:none!important}.np{display:none}#ph{display:block;margin-bottom:10px}body{background:#fff;color:#000}.tw{border:0}table{min-width:0}.tag{border:1px solid #999;background:none;color:#000}}
+@media print{header,#stats,.bar,#ab,#imp,#man,#warn{display:none!important}.np{display:none}#ph{display:block;margin-bottom:10px}body{background:#fff;color:#000}.tw{border:0}table{min-width:0}.tag{border:1px solid #999;background:none;color:#000}}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -57,7 +57,18 @@ tr.g td{background:var(--cyb);color:var(--cy);font-weight:500}
 <div id="warn"></div>
 <div class="stats" id="stats"></div>
 <div class="card" id="imp"><b>📥 อัพโหลดรายการ Invoice (.xlsx)</b> <span class="mu">คอลัมน์: เลขที่ · วันที่ · อ้างอิงPO · ลูกค้า · มูลค่าสินค้า · VAT. · รวมทั้งสิ้น — เลขที่เดิมจะไม่ถูกเปลี่ยนสถานะ</span>
-<div style="margin-top:8px"><input type="file" id="file" accept=".xlsx,.xls,.csv"> <span class="mu" id="prog"></span></div></div>
+<div style="margin-top:8px"><input type="file" id="file" accept=".xlsx,.xls,.csv"> <button class="b gh" id="tpl">⬇ ดาวน์โหลดเท็มเพลต</button> <span class="mu" id="prog"></span></div></div>
+<div class="card" id="man"><b>✍️ พิมพ์เพิ่มบิลเอง</b> <span class="mu">(กรณีไม่อัพโหลดไฟล์) — รวมทั้งสิ้นคำนวณให้อัตโนมัติ แก้ไขเองได้</span>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:8px">
+<input id="m_no" placeholder="เลขที่บิล *">
+<input id="m_dt" type="date" title="วันที่บิล *">
+<input id="m_po" placeholder="อ้างอิง PO">
+<input id="m_cu" placeholder="ลูกค้า *">
+<input id="m_am" type="number" step="0.01" inputmode="decimal" placeholder="มูลค่าสินค้า *">
+<input id="m_vat" type="number" step="0.01" inputmode="decimal" placeholder="VAT">
+<input id="m_tot" type="number" step="0.01" inputmode="decimal" placeholder="รวมทั้งสิ้น *">
+</div>
+<div style="margin-top:8px"><button class="b ok" id="m_add">➕ เพิ่มบิล</button> <button class="b gh" id="m_vat7">คิด VAT 7%</button> <span class="mu" id="m_msg"></span></div></div>
 <div class="bar">
   <input id="q" placeholder="ค้นหา เลขที่บิล / ลูกค้า / PO">
   <label class="mu">วันที่ดำเนินการ <input type="date" id="dt"></label>
@@ -159,7 +170,7 @@ function render(){
   const B=S.bills,cnt=k=>B.filter(b=>k==='all'||b.status===k).length,sum=k=>B.filter(b=>b.status===k).reduce((a,b)=>a+Number(b.total??b.amount??0),0);
   $('role').innerHTML=Object.keys(ROLES).map(r=>`<button class="${S.role===r?'on':''}" data-r="${r}">${ROLES[r]}</button>`).join('');
   $('stats').innerHTML=[['all','ทั้งหมด'],...Object.entries(ST).map(([k,v])=>[k,v[0]])].map(([k,l])=>`<div class="stat ${S.f===k?'on':''}" data-f="${k}">${MINE[S.role].includes(k)&&cnt(k)?'<i>งานของคุณ</i>':''}<b>${cnt(k)}</b><span>${l}</span>${k==='sent'||k==='confirmed'?`<span>฿${fmt(sum(k))}</span>`:''}</div>`).join('');
-  $('imp').style.display=S.role==='a1'?'':'none';
+  $('imp').style.display=S.role==='a1'?'':'none';$('man').style.display=S.role==='a1'?'':'none';
   $('wipe').style.display=S.role==='acct'?'':'none';
   const q=S.q.toLowerCase(),A=acts();
   const rows=B.filter(b=>(S.f==='all'||b.status===S.f)&&(!q||[b.no,b.customer,b.po].join(' ').toLowerCase().includes(q)))
@@ -176,13 +187,16 @@ function render(){
   $('list').innerHTML=(all>300?`<div class="warn">แสดง 300 จาก ${all} รายการ — ใช้ค้นหาเพื่อดูที่เหลือ</div>`:'')+(rows.length?`<div class="tw"><table><thead><tr><th class="np">${A.length?`<input type="checkbox" id="sa"${selAll?' checked':''}>`:''}</th><th>#</th><th data-sort="1" style="cursor:pointer" title="สลับการเรียง">เลขที่บิล ${S.sd>0?'▲':'▼'}</th><th>วันที่บิล</th><th>PO</th><th>ลูกค้า</th><th class="r">รวมทั้งสิ้น</th><th>รับคืนจาก DC</th><th>ส่งบัญชี</th><th>บัญชีรับ</th><th>สถานะ</th></tr></thead><tbody>${h}</tbody></table></div>`:'<div class="empty">ไม่มีรายการในสถานะนี้</div>');
 }
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-r],[data-f],[data-do],[data-sort],#csv,#prt,#sa,#wipe');if(!t)return;
+  const t=e.target.closest('[data-r],[data-f],[data-do],[data-sort],#csv,#prt,#sa,#wipe,#tpl,#m_add,#m_vat7');if(!t)return;
   if(t.dataset.r){const r=t.dataset.r;if(!unlocked(r)){askPw(r,false);return}setRole(r)}
   else if(t.dataset.f){S.f=t.dataset.f;S.sel.clear();render()}
   else if(t.dataset.do)run(t.dataset.do);
   else if(t.dataset.sort){S.sd*=-1;render()}
   else if(t.id==='sa'){const on=t.checked;rowsNow.forEach(b=>on?S.sel.add(b.id):S.sel.delete(b.id));render()}
   else if(t.id==='csv')exportCsv();
+  else if(t.id==='tpl')dlTpl();
+  else if(t.id==='m_add')addManual();
+  else if(t.id==='m_vat7')calcVat();
   else if(t.id==='wipe')wipeAll();
   else if(t.id==='prt'){
     const tot=rowsNow.reduce((a,b)=>a+Number(b.total??b.amount??0),0);
@@ -227,6 +241,29 @@ async function imp(f){
     P.textContent='กำลังบันทึก...';await saveMany(out);P.textContent='✓ นำเข้าแล้ว ใหม่ '+nw+' · อัพเดต '+up;render();
   }catch(e){P.textContent='อ่านไฟล์ไม่สำเร็จ: '+(e.message||e)}
 }
+
+function dlTpl(){
+  if(typeof XLSX==='undefined'){alert('โหลดตัวอ่าน Excel ไม่สำเร็จ ลองรีเฟรชหน้า');return}
+  const ws=XLSX.utils.aoa_to_sheet([['เลขที่','วันที่','อ้างอิงPO','ลูกค้า','มูลค่าสินค้า','VAT.','รวมทั้งสิ้น'],['IV6900001','26/10/2569','PO-0001','ตัวอย่าง ลูกค้า จำกัด',1000,70,1070]]);
+  ws['!cols']=[{wch:16},{wch:14},{wch:16},{wch:30},{wch:14},{wch:12},{wch:14}];
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Invoice');XLSX.writeFile(wb,'invoice-template.xlsx');
+}
+const mv=id=>$(id).value;
+function calcVat(){const a=num(mv('m_am'));if(a==null){$('m_msg').textContent='กรอกมูลค่าสินค้าก่อน';return}const v=Math.round(a*7)/100;$('m_vat').value=v;$('m_tot').value=Math.round((a+v)*100)/100}
+function manualTotal(){const a=num(mv('m_am')),v=num(mv('m_vat'))||0;if(a!=null)$('m_tot').value=Math.round((a+v)*100)/100}
+async function addManual(){
+  const M=$('m_msg'),no=mv('m_no').trim(),dt=mv('m_dt'),cu=mv('m_cu').trim(),am=num(mv('m_am')),tot=num(mv('m_tot'));
+  if(!no||!dt||!cu||am==null||tot==null){M.style.color='var(--er)';M.textContent='กรอกช่อง * ให้ครบ';return}
+  if(S.bills.some(b=>b.no===no)){M.style.color='var(--er)';M.textContent='เลขที่บิลนี้มีในระบบแล้ว';return}
+  const b={id:no.replace(/[^A-Za-z0-9_\-.~:@+]/g,'_'),no,po:mv('m_po').trim(),customer:cu,amount:am,vat:num(mv('m_vat')),total:tot,openDate:dt,dc:'',status:'opened',history:[]};
+  log(b,'เพิ่มบิลเอง');
+  await saveMany([b]);
+  ['m_no','m_po','m_cu','m_am','m_vat','m_tot'].forEach(i=>$(i).value='');
+  M.style.color='var(--ok)';M.textContent='✓ เพิ่มบิล '+no+' แล้ว';
+  S.f='opened';S.sel.clear();render();$('m_no').focus();
+}
+$('m_dt').value=today();
+$('m_am').addEventListener('input',manualTotal);$('m_vat').addEventListener('input',manualTotal);
 async function wipeAll(){
   if(S.role!=='acct')return;
   if(prompt('การล้างข้อมูลจะลบบิลทั้งหมดถาวร และทุกคนที่ใช้งานจะเห็นว่าข้อมูลหาย\nพิมพ์ ล้างข้อมูล เพื่อยืนยัน')!=='ล้างข้อมูล')return;
