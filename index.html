@@ -25,7 +25,7 @@ h1{font-size:20px;margin:0}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin-bottom:12px}
 .mu{color:var(--mu);font-size:13px}
 input{padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
-.bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}.bar #q{flex:1;min-width:160px}
+.bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}.bar .qw{flex:1;min-width:160px;position:relative}.qw input{width:100%;padding-right:36px}.qw button{display:none;position:absolute;right:4px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--mu);font-size:16px;line-height:1;padding:6px 8px;cursor:pointer}.qw button.on{display:block}
 button.b{border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer;background:var(--pr);color:#fff}
 button.b.ok{background:var(--ok)}button.b.er{background:var(--er)}button.b.gh{background:var(--grb);color:var(--tx)}
 button.b:disabled{opacity:.4;cursor:not-allowed}
@@ -70,11 +70,10 @@ tr.g td{background:var(--cyb);color:var(--cy);font-weight:500}
 </div>
 <div style="margin-top:8px"><button class="b ok" id="m_add">➕ เพิ่มบิล</button> <button class="b gh" id="m_vat7">คิด VAT 7%</button> <span class="mu" id="m_msg"></span></div></div>
 <div class="bar">
-  <input id="q" placeholder="ค้นหา เลขที่บิล / ลูกค้า / PO">
+  <span class="qw"><input id="q" placeholder="ค้นหา เลขที่บิล / ลูกค้า / PO"><button type="button" id="qx" title="ล้างคำค้นหา" aria-label="ล้างคำค้นหา">✕</button></span>
   <label class="mu">วันที่ดำเนินการ <input type="date" id="dt"></label>
   <button class="b gh" id="prt">🖨 พิมพ์รายการ</button>
   <button class="b gh" id="csv">⬇ CSV</button>
-  <button class="b er" id="wipe" style="display:none">🗑 ล้างข้อมูลทั้งหมด</button>
 </div>
 <div id="ab"></div>
 <div id="ph"></div>
@@ -100,7 +99,9 @@ const ACT={
  reset:{role:'acct',from:'*',to:'opened',why:1,reset:1,label:'🔄 รีเซตบิลกลับเป็นเริ่มต้น',c:'gh'}
 };
 const MINE={a1:['opened','received','issue'],a2:['checking','checked'],acct:['sent']};
-const S={bills:[],role:'a1',f:'opened',q:'',sd:1,sel:new Set()};
+/* สถานะที่แต่ละ role มองเห็น (เฉพาะหน้างานของตัวเอง) — บัญชีเห็น "รับแล้ว" เพิ่มเพื่อดูประวัติ/รีเซต */
+const VIEW={a1:MINE.a1,a2:MINE.a2,acct:['sent','confirmed']};
+const S={bills:[],role:'a1',f:'opened',q:'',sd:1,sel:new Set(),all:false};
 try{const r=localStorage.getItem('bc2_role');if(MINE[r])S.role=r}catch(e){}
 const PW={a1:'AD1',a2:'SL1',acct:'WHO'};
 const unlocked=r=>{try{return sessionStorage.getItem('bc2_u_'+r)==='1'}catch(e){return false}};
@@ -111,7 +112,7 @@ const fmt=n=>Number(n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximu
 const now=()=>new Date().toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'});
 const log=(b,act,note)=>(b.history=b.history||[]).push({t:now(),who:RS[S.role],act,note:note||''});
 const get=id=>S.bills.find(b=>b.id===id);
-const acts=()=>Object.entries(ACT).filter(([k,a])=>a.role===S.role&&(a.from===S.f||(a.from==='*'&&S.f!=='opened')));
+const acts=()=>S.all?[]:Object.entries(ACT).filter(([k,a])=>a.role===S.role&&(a.from===S.f||(a.from==='*'&&S.f!=='opened')));
 const first=r=>MINE[r].find(k=>S.bills.some(b=>b.status===k))||MINE[r][0];
 S.f=MINE[S.role][0];
 $('dt').value=today();
@@ -125,7 +126,7 @@ async function saveMany(a){
     for(let i=0;i<a.length;i+=400){const bt=fs.batch();a.slice(i,i+400).forEach(b=>bt.set(col.doc(b.id),JSON.parse(JSON.stringify(b))));await bt.commit()}
   }catch(e){alert('บันทึกไม่สำเร็จ: '+(e.code||e.message))}
 }
-function setRole(r){S.role=r;S.sel.clear();S.f=first(r);try{localStorage.setItem('bc2_role',r)}catch(e){}render()}
+function setRole(r){S.all=false;S.role=r;S.sel.clear();S.f=first(r);try{localStorage.setItem('bc2_role',r)}catch(e){}render()}
 function askPw(r0,must){
   const o=document.createElement('div');
   o.style.cssText='position:fixed;inset:0;background:'+(must?'var(--bg)':'rgba(0,0,0,.5)')+';display:flex;align-items:center;justify-content:center;z-index:50';
@@ -167,18 +168,21 @@ function row(b,i,ok){
 let rowsNow=[];
 function render(){
   S.sel=new Set([...S.sel].filter(id=>get(id)));
-  const B=S.bills,cnt=k=>B.filter(b=>k==='all'||b.status===k).length,sum=k=>B.filter(b=>b.status===k).reduce((a,b)=>a+Number(b.total??b.amount??0),0);
-  $('role').innerHTML=Object.keys(ROLES).map(r=>`<button class="${S.role===r?'on':''}" data-r="${r}">${ROLES[r]}</button>`).join('');
-  $('stats').innerHTML=[['all','ทั้งหมด'],...Object.entries(ST).map(([k,v])=>[k,v[0]])].map(([k,l])=>`<div class="stat ${S.f===k?'on':''}" data-f="${k}">${MINE[S.role].includes(k)&&cnt(k)?'<i>งานของคุณ</i>':''}<b>${cnt(k)}</b><span>${l}</span>${k==='sent'||k==='confirmed'?`<span>฿${fmt(sum(k))}</span>`:''}</div>`).join('');
-  $('imp').style.display=S.role==='a1'?'':'none';$('man').style.display=S.role==='a1'?'':'none';
-  $('wipe').style.display=S.role==='acct'?'':'none';
+  const vw=S.all?['all',...Object.keys(ST)]:VIEW[S.role];
+  if(!vw.includes(S.f))S.f=vw[0];
+  const B=S.all?S.bills:S.bills.filter(b=>VIEW[S.role].includes(b.status)),cnt=k=>B.filter(b=>k==='all'||b.status===k).length,sum=k=>B.filter(b=>b.status===k).reduce((a,b)=>a+Number(b.total??b.amount??0),0);
+  $('role').innerHTML=Object.keys(ROLES).map(r=>`<button class="${!S.all&&S.role===r?'on':''}" data-r="${r}">${ROLES[r]}</button>`).join('')+`<button class="${S.all?'on':''}" data-all="1">📊 ภาพรวมทั้งหมด</button>`;
+  $('stats').innerHTML=S.all?'':vw.map(k=>[k,k==='all'?'ทั้งหมด':ST[k][0]]).map(([k,l])=>`<div class="stat ${S.f===k?'on':''}" data-f="${k}">${!S.all&&MINE[S.role].includes(k)&&cnt(k)?'<i>งานของคุณ</i>':''}<b>${cnt(k)}</b><span>${l}</span>${k==='sent'||k==='confirmed'?`<span>฿${fmt(sum(k))}</span>`:''}</div>`).join('');
+  const ed=!S.all;$('imp').style.display=ed&&S.role==='a1'?'':'none';$('man').style.display=ed&&S.role==='a1'?'':'none';
+  $('qx').classList.toggle('on',!!S.q);
   const q=S.q.toLowerCase(),A=acts();
   const rows=B.filter(b=>(S.f==='all'||b.status===S.f)&&(!q||[b.no,b.customer,b.po].join(' ').toLowerCase().includes(q)))
     .sort((a,b)=>(S.f==='sent'?String(a.batch||'').localeCompare(String(b.batch||'')):0)||S.sd*String(a.no).localeCompare(String(b.no),'en',{numeric:true}));
-  const all=rows.length;rows.length=Math.min(all,300);rowsNow=rows;
+  const all=rows.length;if(!S.all)rows.length=Math.min(all,300);rowsNow=rows;
+  $('dt').parentElement.style.display=S.all?'none':'';
   const vis=rows.filter(b=>A.length),selAll=vis.length&&vis.every(b=>S.sel.has(b.id));
-  $('ab').innerHTML=A.length?`<div class="card ab"><b>เลือกแล้ว ${S.sel.size} ใบ</b>${A.map(([k,a])=>`<button class="b ${a.c||''}" data-do="${k}"${S.sel.size?'':' disabled'}>${a.label}</button>`).join('')}</div>`
-    :`<div class="mu" style="margin-bottom:10px">${S.f==='all'?'ดูทุกสถานะ — เลือกการ์ดสถานะด้านบนเพื่อทำงาน':'สถานะนี้ไม่ใช่งานของ '+RS[S.role]+' (ดูอย่างเดียว)'}</div>`;
+  $('ab').innerHTML=S.all?`<div style="font-weight:700;margin-bottom:10px">รายการทั้งหมด ${all} รายการ</div>`:A.length?`<div class="card ab"><b>เลือกแล้ว ${S.sel.size} ใบ</b>${A.map(([k,a])=>`<button class="b ${a.c||''}" data-do="${k}"${S.sel.size?'':' disabled'}>${a.label}</button>`).join('')}</div>`
+    :`<div class="mu" style="margin-bottom:10px">${S.all?'หน้าภาพรวม — ดูอย่างเดียว (ทำงานได้ที่หน้าของแต่ละบทบาท)':'สถานะนี้ไม่ใช่งานของ '+RS[S.role]+' (ดูอย่างเดียว)'}</div>`;
   let h='',i=0,lastB=null;
   for(const b of rows){
     if(S.f==='sent'&&b.batch!==lastB){lastB=b.batch;h+=`<tr class="g"><td colspan="11">ชุดส่งบัญชี ${esc(b.batch||'-')} · ${rows.filter(x=>x.batch===b.batch).length} ใบ</td></tr>`;i=0}
@@ -187,17 +191,18 @@ function render(){
   $('list').innerHTML=(all>300?`<div class="warn">แสดง 300 จาก ${all} รายการ — ใช้ค้นหาเพื่อดูที่เหลือ</div>`:'')+(rows.length?`<div class="tw"><table><thead><tr><th class="np">${A.length?`<input type="checkbox" id="sa"${selAll?' checked':''}>`:''}</th><th>#</th><th data-sort="1" style="cursor:pointer" title="สลับการเรียง">เลขที่บิล ${S.sd>0?'▲':'▼'}</th><th>วันที่บิล</th><th>PO</th><th>ลูกค้า</th><th class="r">รวมทั้งสิ้น</th><th>รับคืนจาก DC</th><th>ส่งบัญชี</th><th>บัญชีรับ</th><th>สถานะ</th></tr></thead><tbody>${h}</tbody></table></div>`:'<div class="empty">ไม่มีรายการในสถานะนี้</div>');
 }
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-r],[data-f],[data-do],[data-sort],#csv,#prt,#sa,#wipe,#tpl,#m_add,#m_vat7');if(!t)return;
-  if(t.dataset.r){const r=t.dataset.r;if(!unlocked(r)){askPw(r,false);return}setRole(r)}
+  const t=e.target.closest('[data-r],[data-all],[data-f],[data-do],[data-sort],#csv,#prt,#qx,#sa,#tpl,#m_add,#m_vat7');if(!t)return;
+  if(t.dataset.all){S.all=true;S.sel.clear();S.f='all';render()}
+  else if(t.dataset.r){const r=t.dataset.r;if(!unlocked(r)){askPw(r,false);return}setRole(r)}
   else if(t.dataset.f){S.f=t.dataset.f;S.sel.clear();render()}
   else if(t.dataset.do)run(t.dataset.do);
   else if(t.dataset.sort){S.sd*=-1;render()}
   else if(t.id==='sa'){const on=t.checked;rowsNow.forEach(b=>on?S.sel.add(b.id):S.sel.delete(b.id));render()}
+  else if(t.id==='qx'){S.q='';$('q').value='';$('q').focus();render()}
   else if(t.id==='csv')exportCsv();
   else if(t.id==='tpl')dlTpl();
   else if(t.id==='m_add')addManual();
   else if(t.id==='m_vat7')calcVat();
-  else if(t.id==='wipe')wipeAll();
   else if(t.id==='prt'){
     const tot=rowsNow.reduce((a,b)=>a+Number(b.total??b.amount??0),0);
     $('ph').innerHTML=`<h2 style="margin:0">รายการบิล — ${esc(S.f==='all'?'ทุกสถานะ':ST[S.f][0])}</h2><div>พิมพ์วันที่ ${now()} · ${rowsNow.length} ใบ · รวม ฿${fmt(tot)} · เรียงตามเลขที่บิล</div>`;
@@ -264,20 +269,10 @@ async function addManual(){
 }
 $('m_dt').value=today();
 $('m_am').addEventListener('input',manualTotal);$('m_vat').addEventListener('input',manualTotal);
-async function wipeAll(){
-  if(S.role!=='acct')return;
-  if(prompt('การล้างข้อมูลจะลบบิลทั้งหมดถาวร และทุกคนที่ใช้งานจะเห็นว่าข้อมูลหาย\nพิมพ์ ล้างข้อมูล เพื่อยืนยัน')!=='ล้างข้อมูล')return;
-  try{
-    if(col){const fs=firebase.firestore(),snap=await col.get();
-      for(let i=0;i<snap.docs.length;i+=400){const bt=fs.batch();snap.docs.slice(i,i+400).forEach(d=>bt.delete(d.ref));await bt.commit()}}
-    S.bills=[];S.sel.clear();S.q='';$('q').value='';try{localStorage.removeItem(LK)}catch(e){}
-    render();alert('ล้างข้อมูลเรียบร้อย กลับเป็นข้อมูลเริ่มต้นแล้ว');
-  }catch(e){alert('ล้างข้อมูลไม่สำเร็จ: '+(e.code||e.message))}
-}
 function exportCsv(){
   const h=['เลขที่บิล','อ้างอิงPO','ลูกค้า','มูลค่าสินค้า','VAT','รวมทั้งสิ้น','วันที่บิล','วันที่รับคืนจาก DC','วันที่ตรวจเสร็จ','วันที่ส่งบัญชี','วันที่บัญชีรับ','ชุดส่งบัญชี','สถานะ'];
   const c=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-  const rows=[...S.bills].sort((a,b)=>String(a.no).localeCompare(String(b.no),'en',{numeric:true}));
+  const rows=S.bills.filter(b=>S.all||VIEW[S.role].includes(b.status)).sort((a,b)=>String(a.no).localeCompare(String(b.no),'en',{numeric:true}));
   const csv='\ufeff'+[h,...rows.map(b=>[b.no,b.po||'',b.customer,b.amount,b.vat??'',b.total??b.amount,b.openDate,b.recvDate||'',b.chkDate||'',b.sendDate||'',b.accDate||'',b.batch||'',ST[b.status][0]])].map(r=>r.map(c).join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='bills-'+today()+'.csv';document.body.appendChild(a);a.click();a.remove();
 }
