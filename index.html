@@ -96,6 +96,7 @@ const ACT={
  undo2:{role:'a2',from:'checked',to:'checking',label:'↩ กลับไปตรวจใหม่',c:'gh'},
  confirm:{role:'acct',from:'sent',to:'confirmed',date:'accDate',label:'✓ บัญชีรับบิลแล้ว',c:'ok'},
  bad3:{role:'acct',from:'sent',to:'issue',why:1,label:'ไม่ครบ / ส่งกลับ',c:'er'},
+ del:{role:'a1',from:'*',del:1,label:'🗑 ลบบิลที่เลือก',c:'er'},
  reset:{role:'acct',from:'*',to:'opened',why:1,reset:1,label:'🔄 รีเซตบิลกลับเป็นเริ่มต้น',c:'gh'}
 };
 const MINE={a1:['opened','received','issue'],a2:['checking','checked'],acct:['sent']};
@@ -112,7 +113,7 @@ const fmt=n=>Number(n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximu
 const now=()=>new Date().toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'});
 const log=(b,act,note)=>(b.history=b.history||[]).push({t:now(),who:RS[S.role],act,note:note||''});
 const get=id=>S.bills.find(b=>b.id===id);
-const acts=()=>S.all?[]:Object.entries(ACT).filter(([k,a])=>a.role===S.role&&(a.from===S.f||(a.from==='*'&&S.f!=='opened')));
+const acts=()=>S.all?[]:Object.entries(ACT).filter(([k,a])=>a.role===S.role&&(a.from===S.f||(a.from==='*'&&(a.del||S.f!=='opened'))));
 const first=r=>MINE[r].find(k=>S.bills.some(b=>b.status===k))||MINE[r][0];
 S.f=MINE[S.role][0];
 $('dt').value=today();
@@ -141,8 +142,17 @@ function askPw(r0,must){
 }
 
 async function run(k){
-  const A=ACT[k],ids=[...S.sel].filter(id=>get(id)&&(A.from==='*'?get(id).status!=='opened':get(id).status===A.from));
+  const A=ACT[k],ids=[...S.sel].filter(id=>get(id)&&(A.from==='*'?(A.del||get(id).status!=='opened'):get(id).status===A.from));
   if(!ids.length)return;
+  if(A.del){
+    const nos=ids.map(id=>get(id).no),pv=nos.slice(0,10).join(', ')+(nos.length>10?' ... และอีก '+(nos.length-10)+' ใบ':'');
+    if(!confirm('ลบบิล '+ids.length+' ใบ ถาวร? (กู้คืนไม่ได้ และทุกคนจะเห็นว่าบิลหายไป)\n\n'+pv))return;
+    try{
+      if(col){const fs=firebase.firestore();for(let i=0;i<ids.length;i+=400){const bt=fs.batch();ids.slice(i,i+400).forEach(id=>bt.delete(col.doc(id)));await bt.commit()}}
+      S.bills=S.bills.filter(b=>!ids.includes(b.id));persist();
+    }catch(e){alert('ลบไม่สำเร็จ: '+(e.code||e.message))}
+    S.sel.clear();render();return;
+  }
   let why='';
   if(A.why){why=prompt(A.reset?'รีเซต '+ids.length+' ใบ กลับเป็น "รอรับคืนจาก DC" (ล้างวันที่และสถานะที่บันทึกไว้)\nระบุเหตุผล':'เหตุผล / เลขบิลที่ไม่ครบ หรือมีปัญหา');if(!why)return}
   else if(!confirm(A.label.replace(/^[✓↩ ]+/,'')+' จำนวน '+ids.length+' ใบ ?'))return;
